@@ -1,0 +1,39 @@
+vzmodel=0 			# 0 = VZ200, 1 = VZ300			
+display=0 			# 0 = PAL, 1 = NTSC
+gfx=1 				# 0 = normal, 1 = australian, 2 = german
+external_font=0 		# 0 = disabled, 1 = enabled
+snow=0 				# 0 = none, 1 = 6847 artefacts
+monitor=1 			# 0 = monochrome, 1 = colour
+inverse=0			# inverse hires 256x192 colours
+disk_drives=1 			# 0 or 1. If 1, the cartfile should be vzdos.rom 
+joystick=0 			# 0 or 1
+rom_writes=0 			# 1 = allow POKEs to ROM mem
+cartridge_writes=0 		# 1 = allow POKEs to Cart mem
+synchVZ=1 			# lock speed at 50 fps
+cassetteAudio=1 		# play cassette tones when loading or saving
+diskAudio=1 			# play stepper motor sound 
+top_of_memory=65535  		# 36863=8k 47103=18k 53247=24k 63487=34k 65535=64k 5=4meg 
+fast_load=1			# 1 = dont display snapshot details after load
+romFile=roms\vzrom.v21  	# path of main rom 
+cartFile=NONE		 	# path of cartridge rom, or NONE 
+fontFile=NONE 			# path of external font file, or NONE 
+
+#
+#	Default RGB colour values for VZ palette. Format is 0xRRGGBB in hex
+#	Adjust to match the colour settings of your real VZ/TV combo
+#	Or experiment to apply B&W/Green/Amber monitor filter
+#
+
+RGB_Green=0x00ff00 
+RGB_Yellow=0xffff00 
+RGB_Blue=0x0000ff 
+RGB_Red=0xff0000 
+RGB_Buff=0xffffff 
+RGB_Cyan=0x00ffff 
+RGB_Magenta=0xff00ff 
+RGB_Orange=0xff8000 
+RGB_Black=0x000000 
+RGB_DarkGreen=0x006000 
+RGB_BrightGreen=0xa0a0a0 
+RGB_DarkOrange=0x401000 
+RGB_BrightOrange=0xffc418 
