@@ -24,6 +24,9 @@
     <ClCompile Include="osdepend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vz.rc">
@@ -58,8 +61,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="changetrack.wav" />
-    <None Include="ReadMe.txt" />
     <None Include="readsector.wav" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>
