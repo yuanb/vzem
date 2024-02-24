@@ -388,8 +388,8 @@ IDI_ICON1               ICON                    "icon1.ico"
 // WAVE
 //
 
-IDR_WAVE_CHANGETRK      WAVE                    "C:\\WinVZ\\changetrack.wav"
-IDR_WAVE_READSECTOR     WAVE                    "C:\\WinVZ\\readsector.wav"
+IDR_WAVE_CHANGETRK      WAVE                    ".\\changetrack.wav"
+IDR_WAVE_READSECTOR     WAVE                    ".\\readsector.wav"
 
 /////////////////////////////////////////////////////////////////////////////
 //
