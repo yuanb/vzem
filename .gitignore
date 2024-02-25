@@ -1,3 +1,2 @@
 source/winvz/.vs
-source/winvz/Debug
-source/winvz/Release
+source/winvz/build
