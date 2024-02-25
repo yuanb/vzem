@@ -1,4 +1,10 @@
 ### Update history
+2024-02-25 
+Project settings cleanup
+Temporarily disabled DirectInput code
+Added x64 build targets
+All debug and release builds for Win32 and x64 are tested.
+
 2024-02-24  
 Updated project to VS 2022, Platform toolset v143, Windows SDK 10.0  
 Fixed Include path Debug|Release  
