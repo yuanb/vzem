@@ -9,8 +9,6 @@
 #include <Mmsystem.h>
 #include <commdlg.h>
 #include <ddraw.h>
-//TODO: Migrate DirectInput
-//#include "dinput.h"
 #include <mmreg.h>
 #include <dsound.h>
 #include <math.h>
@@ -19,7 +17,6 @@
 
 
 #define MAX_LOADSTRING 100
-#define WM_SYNCACQUIRE (WM_USER+1)
 #define max_path 512
 
 static int g_playpos = 0;
@@ -185,13 +182,6 @@ BOOL                        g_bActive = FALSE;		// Is application active?
 BOOL						g_bWindowed = TRUE;		// App running in window
 int							BytesPerPixel;
 
-// Direct Input
-
-//TODO: Migrate DirectInput
-//LPDIRECTINPUT7       g_pDI;            // The DInput object
-//LPDIRECTINPUTDEVICE2 g_pdidDevice2;    // The DIDevice2 interface
-//GUID                 g_guidJoystick;   // The GUID for the joystick
-
 // Direct Sound
 
 #define SAFE_DELETE(p)  { if(p) { delete (p);     (p)=NULL; } }
@@ -245,8 +235,6 @@ USHORT	RGB16BIT[16];
 //-----------------------------------------------------------------------------
 
 #include "ddraw.cpp"
-//TODO: Migrate DirectInput
-//#include "dinput.cpp"
 #include "dsound.cpp"
 
 void removeFilePath(char *s, char *d)
@@ -472,207 +460,198 @@ void osd_ScanKbrd(BYTE *kbrd)
    // Poll the device before reading the current state. This is required
    // for some devices (joysticks) but has no effect for others (keyboard
    // and mice). Note: this uses a DIDevice2 interface for the device.
- //TODO: Migrate DirectInput
- //  if( FAILED( g_pdidDevice2->Poll() ) )
- //       return;
+   if (!GetKeyboardState(diks))
+	   return;
 
- //  hRet = g_pdidDevice2->GetDeviceState( sizeof(diks), &diks );
+   for (int i = 0; i < sizeof(diks); i++)
+	   diks[i] = diks[i] & 0x80;
+ 
+   static bool lastframe = false;
+   if (diks[VK_F11])					// Toggle window & full screen
+   {
+	    if (lastframe == false)
+		{
+			lastframe = true;
+            g_bWindowed = !g_bWindowed;
+		    if (g_bWindowed)
+			{
+				PostMessage(g_hWnd, WM_COMMAND, ID_OPTIONS_SIZE_X2, 0);
+				SetWindowLong(g_hWnd, GWL_STYLE, lStyle);
+				SetWindowPos(g_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_FRAMECHANGED);
 
- //  // Check whether the input stream has been interrupted. If so,
- //  // re-acquire and try again.
- //  if( hRet == DIERR_INPUTLOST )
- //  {
- //      hRet = g_pdidDevice2->Acquire();
- //      if( SUCCEEDED(hRet) )
- //           return;
- //  }
+				SetMenu(g_hWnd, hMenu);										// show menu
+				ShowWindow(hTool, SW_SHOW);									// show toolbar
+				ShowWindow(hStatus, SW_SHOW);								// show status bar 
+				UpdateWindow(g_hWnd); 
+			}
+			else			// Simulate full screen
+			{	
+				PostMessage(g_hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);			// maximise screen 
+				SetMenu(g_hWnd, NULL);										// hide menu
+				ShowWindow(hTool, SW_HIDE);									// hide toolbar
+				ShowWindow(hStatus, SW_HIDE);								// hide status bar 
 
- //  static bool lastframe = false;
- //  if (diks[DIK_F11])					// Toggle window & full screen
- //  {
-	//    if (lastframe == false)
-	//	{
-	//		lastframe = true;
- //           g_bWindowed = !g_bWindowed;
-	//	    if (g_bWindowed)
-	//		{
-	//			PostMessage(g_hWnd, WM_COMMAND, ID_OPTIONS_SIZE_X2, 0);
-	//			SetWindowLong(g_hWnd, GWL_STYLE, lStyle);
-	//			SetWindowPos(g_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_FRAMECHANGED);
+				int w = GetSystemMetrics(SM_CXSCREEN);						// hide task bar 
+				int h = GetSystemMetrics(SM_CYSCREEN);
+				SetWindowLongPtr(g_hWnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);
+				SetWindowPos(g_hWnd, HWND_TOP, 0, 0, w, h, SWP_FRAMECHANGED);
+				UpdateWindow(g_hWnd);
+			}
+		}
+   }
+   else
+   {
+	   lastframe = false;
+   }
 
-	//			SetMenu(g_hWnd, hMenu);										// show menu
-	//			ShowWindow(hTool, SW_SHOW);									// show toolbar
-	//			ShowWindow(hStatus, SW_SHOW);								// show status bar 
-	//			UpdateWindow(g_hWnd); 
-	//		}
-	//		else			// Simulate full screen
-	//		{	
-	//			PostMessage(g_hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);			// maximise screen 
-	//			SetMenu(g_hWnd, NULL);										// hide menu
-	//			ShowWindow(hTool, SW_HIDE);									// hide toolbar
-	//			ShowWindow(hStatus, SW_HIDE);								// hide status bar 
+   //BY:They following definitions use US standard keyboard layout
+   // keyboard line 0
+   k = kbrd[0];
+   if (diks['R']) k = (k & 0xDF);
+   if (diks['Q']) k = (k & 0xEF);
+   if (diks['E']) k = (k & 0xF7);
+   if (diks['W']) k = (k & 0xFD);
+   if (diks['T']) k = (k & 0xFE);
+   kbrd[0] = k;
 
-	//			int w = GetSystemMetrics(SM_CXSCREEN);						// hide task bar 
-	//			int h = GetSystemMetrics(SM_CYSCREEN);
-	//			SetWindowLongPtr(g_hWnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);
-	//			SetWindowPos(g_hWnd, HWND_TOP, 0, 0, w, h, SWP_FRAMECHANGED);
-	//			UpdateWindow(g_hWnd);
-	//		}
-	//	}
- //  }
- //  else
- //  {
-	//   lastframe = false;
- //  }
+   // diksboard line 1
+   k = kbrd[1];
+   if (diks['F']) k = (k & 0xDF);
+   if (diks['A']) k = (k & 0xEF);
+   if (diks['D']) k = (k & 0xF7);
+   if (diks[VK_LCONTROL]) k = (k & 0xFB);
+   if (diks[VK_RCONTROL]) k = (k & 0xFB);
+   if (diks['S']) k = (k & 0xFD);
+   if (diks['G']) k = (k & 0xFE);
+   kbrd[1] = k;
 
+   // diksboard line 2
+   k = kbrd[2];
+   if (diks['V']) k = (k & 0xDF);
+   if (diks['Z']) k = (k & 0xEF);
+   if (diks['C']) k = (k & 0xF7);
+   if (diks[VK_LSHIFT] ) k = (k & 0xFB);
+   if (diks[VK_RSHIFT] ) k = (k & 0xFB);
+   if (diks['X']) k = (k & 0xFD);
+   if (diks['B']) k = (k & 0xFE);
+   kbrd[2] = k;
 
- //  // keyboard line 0
- //  k = kbrd[0];
- //  if (diks[DIK_R]) k = (k & 0xDF); 
- //  if (diks[DIK_Q]) k = (k & 0xEF); 
- //  if (diks[DIK_E]) k = (k & 0xF7); 
- //  if (diks[DIK_W]) k = (k & 0xFD); 
- //  if (diks[DIK_T]) k = (k & 0xFE); 
- //  kbrd[0] = k;
+   // diksboard line 3
+   k = kbrd[3];
+   if (diks['4']) k = (k & 0xDF); 
+   if (diks['1']) k = (k & 0xEF); 
+   if (diks['3']) k = (k & 0xF7); 
+   if (diks['2']) k = (k & 0xFD); 
+   if (diks['5']) k = (k & 0xFE); 
+   kbrd[3] = k;
 
- //  // diksboard line 1
- //  k = kbrd[1];
- //  if (diks[DIK_F]) k = (k & 0xDF); 
- //  if (diks[DIK_A]) k = (k & 0xEF); 
- //  if (diks[DIK_D]) k = (k & 0xF7); 
- //  if (diks[DIK_LCONTROL]) k = (k & 0xFB); 
- //  if (diks[DIK_RCONTROL]) k = (k & 0xFB);
- //  if (diks[DIK_S]) k = (k & 0xFD); 
- //  if (diks[DIK_G]) k = (k & 0xFE); 
- //  kbrd[1] = k;
+   // diksboard line 4
+   k = kbrd[4];
+   if (diks['M']) k = (k & 0xDF);
+   if (diks[VK_SPACE]) k = (k & 0xEF);
+   if (diks[VK_OEM_COMMA]) k = (k & 0xF7);
+   if (diks[VK_OEM_PERIOD]) k = (k & 0xFD);
+   if (diks['N']) k = (k & 0xFE);
+   kbrd[4] = k;
 
- //  // diksboard line 2
- //  k = kbrd[2];
- //  if (diks[DIK_V]) k = (k & 0xDF); 
- //  if (diks[DIK_Z]) k = (k & 0xEF); 
- //  if (diks[DIK_C]) k = (k & 0xF7); 
- //  if (diks[DIK_LSHIFT] ) k = (k & 0xFB); 
- //  if (diks[DIK_RSHIFT] ) k = (k & 0xFB); 
- //  if (diks[DIK_X]) k = (k & 0xFD); 
- //  if (diks[DIK_B]) k = (k & 0xFE); 
- //  kbrd[2] = k;
+   // diksboard line 5
+   k = kbrd[5];
+   if (diks['7']) k = (k & 0xDF); 
+   if (diks['0']) k = (k & 0xEF); 
+   if (diks['8']) k = (k & 0xF7); 
+   if (diks[VK_OEM_MINUS]) k = (k & 0xFB);
+   //if (diks[DIK_EQUALS]) k = (k & 0xFB);	//BY:This key is not present on the VZ300 keyboard. Use VK_OEM_PLUS if this is needed.
+   if (diks['9']) k = (k & 0xFD); 
+   if (diks['6']) k = (k & 0xFE); 
+   kbrd[5] = k;
 
- //  // diksboard line 3
- //  k = kbrd[3];
- //  if (diks[DIK_4]) k = (k & 0xDF); 
- //  if (diks[DIK_1]) k = (k & 0xEF); 
- //  if (diks[DIK_3]) k = (k & 0xF7); 
- //  if (diks[DIK_2]) k = (k & 0xFD); 
- //  if (diks[DIK_5]) k = (k & 0xFE); 
- //  kbrd[3] = k;
+   // diksboard line 6
+   k = kbrd[6];
+   if (diks['U']) k = (k & 0xDF); else k = (k | 0x20);
+   if (diks['P']) k = (k & 0xEF); else k = (k | 0x10);
+   if (diks['I']) k = (k & 0xF7); else k = (k | 0x08);
+   if (diks[VK_RETURN]) k = (k & 0xFB); else k = (k | 0x04);
+   if (diks['O']) k = (k & 0xFD); else k = (k | 0x02);
+   if (diks['Y']) k = (k & 0xFE); else k = (k | 0x01);
+   kbrd[6] = k;
 
- //  // diksboard line 4
- //  k = kbrd[4];
- //  if (diks[DIK_M]) k = (k & 0xDF); 
- //  if (diks[DIK_SPACE]) k = (k & 0xEF); 
- //  if (diks[DIK_COMMA]) k = (k & 0xF7); 
- //  if (diks[DIK_PERIOD]) k = (k & 0xFD); 
- //  if (diks[DIK_N]) k = (k & 0xFE); 
- //  kbrd[4] = k;
-
- //  // diksboard line 5
- //  k = kbrd[5];
- //  if (diks[DIK_7]) k = (k & 0xDF); 
- //  if (diks[DIK_0]) k = (k & 0xEF); 
- //  if (diks[DIK_8]) k = (k & 0xF7); 
- //  if (diks[DIK_MINUS]) k = (k & 0xFB); 
- //  if (diks[DIK_EQUALS]) k = (k & 0xFB); 
- //  if (diks[DIK_9]) k = (k & 0xFD); 
- //  if (diks[DIK_6]) k = (k & 0xFE); 
- //  kbrd[5] = k;
-
- //  // diksboard line 6
- //  k = kbrd[6];
- //  if (diks[DIK_U]) k = (k & 0xDF); else k = (k | 0x20);
- //  if (diks[DIK_P]) k = (k & 0xEF); else k = (k | 0x10);
- //  if (diks[DIK_I]) k = (k & 0xF7); else k = (k | 0x08);
- //  if (diks[DIK_RETURN]) k = (k & 0xFB); else k = (k | 0x04);
- //  if (diks[DIK_O]) k = (k & 0xFD); else k = (k | 0x02);
- //  if (diks[DIK_Y]) k = (k & 0xFE); else k = (k | 0x01);
- //  kbrd[6] = k;
-
- //  // diksboard line 7
- //  k = kbrd[7];
- //  if (diks[DIK_J]) k = (k & 0xDF); 
- //  if (diks[DIK_SEMICOLON]) k = (k & 0xEF); 
- //  if (diks[DIK_K]) k = (k & 0xF7); 
- //  if (diks[DIK_APOSTROPHE]) k = (k & 0xFB); 
- //  if (diks[DIK_L]) k = (k & 0xFD); 
- //  if (diks[DIK_H]) k = (k & 0xFE); 
- //  kbrd[7] = k;
+   // diksboard line 7
+   k = kbrd[7];
+   if (diks['J']) k = (k & 0xDF);
+   if (diks[VK_OEM_1]) k = (k & 0xEF);
+   if (diks['K']) k = (k & 0xF7);
+   if (diks[VK_OEM_7]) k = (k & 0xFB);
+   if (diks['L']) k = (k & 0xFD);
+   if (diks['H']) k = (k & 0xFE);
+   kbrd[7] = k;
 
 
- //  g_joystickByte = 0xFF;
- //  if (diks[DIK_NUMPAD4]) g_joystickByte &= 0xFB;
- //  if (diks[DIK_NUMPAD6]) g_joystickByte &= 0xF7;
- //  if (diks[DIK_NUMPAD8]) g_joystickByte &= 0xFE;
- //  if (diks[DIK_NUMPAD2]) g_joystickByte &= 0xFD;
- //  if (diks[DIK_NUMPAD5]) g_joystickByte &= 0xEF;
- //  if (diks[DIK_NUMPAD0]) g_joystickByte &= 0x7F; // this is a hack to fit status in 1 byte
+   g_joystickByte = 0xFF;
+   if (diks[VK_NUMPAD4]) g_joystickByte &= 0xFB;
+   if (diks[VK_NUMPAD6]) g_joystickByte &= 0xF7;
+   if (diks[VK_NUMPAD8]) g_joystickByte &= 0xFE;
+   if (diks[VK_NUMPAD2]) g_joystickByte &= 0xFD;
+   if (diks[VK_NUMPAD5]) g_joystickByte &= 0xEF;
+   if (diks[VK_NUMPAD0]) g_joystickByte &= 0x7F; // this is a hack to fit status in 1 byte
 
- //  // extra dikss
- //  if (diks[DIK_BACKSPACE]) 
- //  {
-	//kbrd[4] &= 0xDF;              // press M
-	//kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   // extra dikss
+   if (diks[VK_BACK])
+   {
+	kbrd[4] &= 0xDF;              // press M
+	kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_LEFT]) 
- //  {
-	//kbrd[4] &= 0xDF;              // press M
-	//kbrd[1] &= 0xFB;			  // press ctrl
- //  }
+   if (diks[VK_LEFT]) 
+   {
+	kbrd[4] &= 0xDF;              // press M
+	kbrd[1] &= 0xFB;			  // press ctrl
+   }
 
- //  if (diks[DIK_RIGHT])     
- //  {
-	//   kbrd[4] &= 0xF7;              // press comma
-	//   kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_RIGHT])
+   {
+	   kbrd[4] &= 0xF7;              // press comma
+	   kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_UP])        
- //  {
-	//   kbrd[4] &= 0xFD;              // press period
-	//   kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_UP])
+   {
+	   kbrd[4] &= 0xFD;              // press period
+	   kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_DOWN])      
- //  {
-	//   kbrd[4] &= 0xEF;              // press space
-	//   kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_DOWN])      
+   {
+	   kbrd[4] &= 0xEF;              // press space
+	   kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_INSERT])    
- //  {
- //      kbrd[7] &= 0xFD;              // press L
- //      kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_INSERT])
+   {
+       kbrd[7] &= 0xFD;              // press L
+       kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_DELETE])       
- //  {
-	//kbrd[7] &= 0xEF;              // press semicolon
-	//kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_DELETE])       
+   {
+	kbrd[7] &= 0xEF;              // press semicolon
+	kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_END])       
- //  {
-	//kbrd[7] &= 0xFB;              // press apostrophe
-	//kbrd[1] &= 0xFB;          // press ctrl
- //  }
+   if (diks[VK_END])
+   {
+	kbrd[7] &= 0xFB;              // press apostrophe
+	kbrd[1] &= 0xFB;          // press ctrl
+   }
 
- //  if (diks[DIK_ESCAPE])
- //  {
-	//   g_internalMenu = true; 
- //  }
+   if (diks[VK_ESCAPE])
+   {
+	   g_internalMenu = true; 
+   }
 
- //  if (g_pasteclipboard)
- //  {
-	//	pasteClipboardChar(kbrd);
- //  }
+   if (g_pasteclipboard)
+   {
+		pasteClipboardChar(kbrd);
+   }
 }
 
 
@@ -2444,24 +2423,11 @@ SendMessage(hTool, TB_AUTOSIZE, 0, 0);
         case WM_ACTIVATE:
             // Pause if minimized
             g_bActive = !((BOOL)HIWORD(wParam));
-            PostMessage( hWnd, WM_SYNCACQUIRE, 0, 0 );
             break;
 
 		case WM_KILLFOCUS:
 			g_bActive = false;
 			break;
-
-        case WM_SYNCACQUIRE:
-			//TODO: Migrate DirectInput
-            //if( g_pdidDevice2 )
-            //{
-            //    if( g_bActive)
-            //        g_pdidDevice2->Acquire();
-            //    else
-            //        g_pdidDevice2->Unacquire();
-            //}
-            break;
-
 
 		case WM_COMMAND:
 			wmId    = LOWORD(wParam); 
@@ -3063,19 +3029,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, HWND *phWnd)
     if (FAILED(hRet))
     	return FALSE;
 
-
-    // Create the DInput object
-	//TODO: Migrate DirectInput
-    //if( FAILED( CreateDInput( *phWnd ) ) )
-    //{
-    //    return DDERR_GENERIC;
-    //}
-
-	
-    //CreateInputDevice( GetParent(*phWnd), GUID_SysKeyboard, &c_dfDIKeyboard,
-    //                   DISCL_NONEXCLUSIVE|DISCL_FOREGROUND );
-	
-
     // Init DirectSound
     if( FAILED( InitDirectSound( *phWnd ) ) )
     {
@@ -3587,10 +3540,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         }
 
     }
-
-	//TODO: Migrate DirectInput
-    //DestroyInputDevice();
-    //DestroyDInput();
 
 	FreeDirectSound();
     if (g_pDD)

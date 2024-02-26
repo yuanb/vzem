@@ -1,4 +1,8 @@
 ### Update history
+2024-02-26  
+Replaced dinput with GetKeyboardState for keyboard input. DirectInput is deprecated since Windows 8.  
+XInput is for handling input from Xbox-compatible game controllers  
+
 2024-02-25 
 Project settings cleanup
 Temporarily disabled DirectInput code
