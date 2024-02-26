@@ -105,7 +105,7 @@
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c:\mssdk\lib;$(LibraryPath)</LibraryPath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">c:\mssdk\lib;$(LibraryPath)</LibraryPath>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">vzem</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vzem_$(Platform)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -262,6 +262,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/vz.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>copy $(TargetDir)$(TargetFileName) $(ProjectDir)..\..\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -309,6 +312,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/vz.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>copy $(TargetDir)$(TargetFileName) $(ProjectDir)..\..\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="osdepend.cpp">
