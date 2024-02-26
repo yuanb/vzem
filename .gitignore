@@ -1,2 +1,3 @@
 source/winvz/.vs
 source/winvz/build
+*.exe
