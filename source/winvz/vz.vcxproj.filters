@@ -24,9 +24,6 @@
     <ClCompile Include="osdepend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StdAfx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="vz.rc">
@@ -50,6 +47,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Z80\Z80.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keymapper_us.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

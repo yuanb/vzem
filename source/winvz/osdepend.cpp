@@ -9,6 +9,7 @@
 #include <Mmsystem.h>
 #include <commdlg.h>
 #include <ddraw.h>
+#include "keymapper_us.h"
 #include <mmreg.h>
 #include <dsound.h>
 #include <math.h>
@@ -17,6 +18,7 @@
 
 
 #define MAX_LOADSTRING 100
+//TODO: Refactor this
 #define max_path 512
 
 static int g_playpos = 0;
@@ -467,7 +469,7 @@ void osd_ScanKbrd(BYTE *kbrd)
 	   diks[i] = diks[i] & 0x80;
  
    static bool lastframe = false;
-   if (diks[VK_F11])					// Toggle window & full screen
+   if (diks[DIK_F11])					// Toggle window & full screen
    {
 	    if (lastframe == false)
 		{
@@ -504,98 +506,98 @@ void osd_ScanKbrd(BYTE *kbrd)
 	   lastframe = false;
    }
 
-   //BY:They following definitions use US standard keyboard layout
+
    // keyboard line 0
    k = kbrd[0];
-   if (diks['R']) k = (k & 0xDF);
-   if (diks['Q']) k = (k & 0xEF);
-   if (diks['E']) k = (k & 0xF7);
-   if (diks['W']) k = (k & 0xFD);
-   if (diks['T']) k = (k & 0xFE);
+   if (diks[DIK_R]) k = (k & 0xDF); 
+   if (diks[DIK_Q]) k = (k & 0xEF); 
+   if (diks[DIK_E]) k = (k & 0xF7); 
+   if (diks[DIK_W]) k = (k & 0xFD); 
+   if (diks[DIK_T]) k = (k & 0xFE); 
    kbrd[0] = k;
 
    // diksboard line 1
    k = kbrd[1];
-   if (diks['F']) k = (k & 0xDF);
-   if (diks['A']) k = (k & 0xEF);
-   if (diks['D']) k = (k & 0xF7);
-   if (diks[VK_LCONTROL]) k = (k & 0xFB);
-   if (diks[VK_RCONTROL]) k = (k & 0xFB);
-   if (diks['S']) k = (k & 0xFD);
-   if (diks['G']) k = (k & 0xFE);
+   if (diks[DIK_F]) k = (k & 0xDF); 
+   if (diks[DIK_A]) k = (k & 0xEF); 
+   if (diks[DIK_D]) k = (k & 0xF7); 
+   if (diks[DIK_LCONTROL]) k = (k & 0xFB); 
+   if (diks[DIK_RCONTROL]) k = (k & 0xFB);
+   if (diks[DIK_S]) k = (k & 0xFD); 
+   if (diks[DIK_G]) k = (k & 0xFE); 
    kbrd[1] = k;
 
    // diksboard line 2
    k = kbrd[2];
-   if (diks['V']) k = (k & 0xDF);
-   if (diks['Z']) k = (k & 0xEF);
-   if (diks['C']) k = (k & 0xF7);
-   if (diks[VK_LSHIFT] ) k = (k & 0xFB);
-   if (diks[VK_RSHIFT] ) k = (k & 0xFB);
-   if (diks['X']) k = (k & 0xFD);
-   if (diks['B']) k = (k & 0xFE);
+   if (diks[DIK_V]) k = (k & 0xDF); 
+   if (diks[DIK_Z]) k = (k & 0xEF); 
+   if (diks[DIK_C]) k = (k & 0xF7); 
+   if (diks[DIK_LSHIFT] ) k = (k & 0xFB); 
+   if (diks[DIK_RSHIFT] ) k = (k & 0xFB); 
+   if (diks[DIK_X]) k = (k & 0xFD); 
+   if (diks[DIK_B]) k = (k & 0xFE); 
    kbrd[2] = k;
 
    // diksboard line 3
    k = kbrd[3];
-   if (diks['4']) k = (k & 0xDF); 
-   if (diks['1']) k = (k & 0xEF); 
-   if (diks['3']) k = (k & 0xF7); 
-   if (diks['2']) k = (k & 0xFD); 
-   if (diks['5']) k = (k & 0xFE); 
+   if (diks[DIK_4]) k = (k & 0xDF); 
+   if (diks[DIK_1]) k = (k & 0xEF); 
+   if (diks[DIK_3]) k = (k & 0xF7); 
+   if (diks[DIK_2]) k = (k & 0xFD); 
+   if (diks[DIK_5]) k = (k & 0xFE); 
    kbrd[3] = k;
 
    // diksboard line 4
    k = kbrd[4];
-   if (diks['M']) k = (k & 0xDF);
-   if (diks[VK_SPACE]) k = (k & 0xEF);
-   if (diks[VK_OEM_COMMA]) k = (k & 0xF7);
-   if (diks[VK_OEM_PERIOD]) k = (k & 0xFD);
-   if (diks['N']) k = (k & 0xFE);
+   if (diks[DIK_M]) k = (k & 0xDF); 
+   if (diks[DIK_SPACE]) k = (k & 0xEF); 
+   if (diks[DIK_COMMA]) k = (k & 0xF7); 
+   if (diks[DIK_PERIOD]) k = (k & 0xFD); 
+   if (diks[DIK_N]) k = (k & 0xFE); 
    kbrd[4] = k;
 
    // diksboard line 5
    k = kbrd[5];
-   if (diks['7']) k = (k & 0xDF); 
-   if (diks['0']) k = (k & 0xEF); 
-   if (diks['8']) k = (k & 0xF7); 
-   if (diks[VK_OEM_MINUS]) k = (k & 0xFB);
-   //if (diks[DIK_EQUALS]) k = (k & 0xFB);	//BY:This key is not present on the VZ300 keyboard. Use VK_OEM_PLUS if this is needed.
-   if (diks['9']) k = (k & 0xFD); 
-   if (diks['6']) k = (k & 0xFE); 
+   if (diks[DIK_7]) k = (k & 0xDF); 
+   if (diks[DIK_0]) k = (k & 0xEF); 
+   if (diks[DIK_8]) k = (k & 0xF7); 
+   if (diks[DIK_MINUS]) k = (k & 0xFB); 
+   if (diks[DIK_EQUALS]) k = (k & 0xFB); 
+   if (diks[DIK_9]) k = (k & 0xFD); 
+   if (diks[DIK_6]) k = (k & 0xFE); 
    kbrd[5] = k;
 
    // diksboard line 6
    k = kbrd[6];
-   if (diks['U']) k = (k & 0xDF); else k = (k | 0x20);
-   if (diks['P']) k = (k & 0xEF); else k = (k | 0x10);
-   if (diks['I']) k = (k & 0xF7); else k = (k | 0x08);
-   if (diks[VK_RETURN]) k = (k & 0xFB); else k = (k | 0x04);
-   if (diks['O']) k = (k & 0xFD); else k = (k | 0x02);
-   if (diks['Y']) k = (k & 0xFE); else k = (k | 0x01);
+   if (diks[DIK_U]) k = (k & 0xDF); else k = (k | 0x20);
+   if (diks[DIK_P]) k = (k & 0xEF); else k = (k | 0x10);
+   if (diks[DIK_I]) k = (k & 0xF7); else k = (k | 0x08);
+   if (diks[DIK_RETURN]) k = (k & 0xFB); else k = (k | 0x04);
+   if (diks[DIK_O]) k = (k & 0xFD); else k = (k | 0x02);
+   if (diks[DIK_Y]) k = (k & 0xFE); else k = (k | 0x01);
    kbrd[6] = k;
 
    // diksboard line 7
    k = kbrd[7];
-   if (diks['J']) k = (k & 0xDF);
-   if (diks[VK_OEM_1]) k = (k & 0xEF);
-   if (diks['K']) k = (k & 0xF7);
-   if (diks[VK_OEM_7]) k = (k & 0xFB);
-   if (diks['L']) k = (k & 0xFD);
-   if (diks['H']) k = (k & 0xFE);
+   if (diks[DIK_J]) k = (k & 0xDF); 
+   if (diks[DIK_SEMICOLON]) k = (k & 0xEF); 
+   if (diks[DIK_K]) k = (k & 0xF7); 
+   if (diks[DIK_APOSTROPHE]) k = (k & 0xFB); 
+   if (diks[DIK_L]) k = (k & 0xFD); 
+   if (diks[DIK_H]) k = (k & 0xFE); 
    kbrd[7] = k;
 
 
    g_joystickByte = 0xFF;
-   if (diks[VK_NUMPAD4]) g_joystickByte &= 0xFB;
-   if (diks[VK_NUMPAD6]) g_joystickByte &= 0xF7;
-   if (diks[VK_NUMPAD8]) g_joystickByte &= 0xFE;
-   if (diks[VK_NUMPAD2]) g_joystickByte &= 0xFD;
-   if (diks[VK_NUMPAD5]) g_joystickByte &= 0xEF;
-   if (diks[VK_NUMPAD0]) g_joystickByte &= 0x7F; // this is a hack to fit status in 1 byte
+   if (diks[DIK_NUMPAD4]) g_joystickByte &= 0xFB;
+   if (diks[DIK_NUMPAD6]) g_joystickByte &= 0xF7;
+   if (diks[DIK_NUMPAD8]) g_joystickByte &= 0xFE;
+   if (diks[DIK_NUMPAD2]) g_joystickByte &= 0xFD;
+   if (diks[DIK_NUMPAD5]) g_joystickByte &= 0xEF;
+   if (diks[DIK_NUMPAD0]) g_joystickByte &= 0x7F; // this is a hack to fit status in 1 byte
 
    // extra dikss
-   if (diks[VK_BACK])
+   if (diks[DIK_BACKSPACE]) 
    {
 	kbrd[4] &= 0xDF;              // press M
 	kbrd[1] &= 0xFB;          // press ctrl
