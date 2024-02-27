@@ -1,3 +1,10 @@
+### Features
+Added x64 build targets
+ISO C++ 17 Standard
+Removed DirectInput dependency.
+Added US Standard keyboard key mapper
+
+
 ### Update history
 2024-02-26  
 Replaced dinput with GetKeyboardState for keyboard input. DirectInput is deprecated since Windows 8.  
