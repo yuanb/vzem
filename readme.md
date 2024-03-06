@@ -24,9 +24,11 @@ VS 2022
 Platform toolset v143  
 Windows SDK 10.0  
 
-### Buidl targets
+### Build targets
 x64|Win32, Debug and Release  
 
 ### TODOs
 Consider refactoring DirectDraw to Direct2D, as it is no longer recommended  
+Create github releases  
+
 
