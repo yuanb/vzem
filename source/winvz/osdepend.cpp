@@ -264,20 +264,22 @@ void removeFilePath(char *s, char *d)
  */
 int copyStringToClipboard(char * source)
 {
-   int ok = OpenClipboard(NULL);
-   
-   if (!ok) return -1;
-   /* else */
-
-	HGLOBAL clipbuffer;
-	char * buffer;
-	EmptyClipboard();
-	clipbuffer = GlobalAlloc(GMEM_DDESHARE, strlen(source)+1);
-	buffer = (char*)GlobalLock(clipbuffer);
-	strcpy(buffer, source);
-	GlobalUnlock(clipbuffer);
-	SetClipboardData(CF_TEXT,clipbuffer);
-	CloseClipboard();
+	int ok = -1;
+	if (OpenClipboard(NULL))
+	{
+		HGLOBAL clipbuffer;
+		char* buffer;
+		EmptyClipboard();
+		clipbuffer = GlobalAlloc(GMEM_DDESHARE, strlen(source) + 1);
+		buffer = (char*)GlobalLock(clipbuffer);
+		strcpy(buffer, source);
+		GlobalUnlock(clipbuffer);
+		SetClipboardData(CF_TEXT, clipbuffer);
+		CloseClipboard();
+		
+		ok = 0;
+	}
+	return ok;
 }
 
 void copyClipboardToKeyboard()
