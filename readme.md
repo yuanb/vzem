@@ -15,3 +15,6 @@ Windows 11 23H2
 VS 2022  
 Platform toolset v143  
 Windows SDK 10.0  
+
+### Buidl targets
+x64|Win32, Debug and Release  
