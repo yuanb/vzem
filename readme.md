@@ -7,6 +7,14 @@ Additionally, it aims to rectify any compiler warnings.
 Please refer to the readme.txt file for detailed information on the vzem emulator.  
 Please check migration notes.md for migration history and details.  
 
+### Features
+Added x64 build targets  
+ISO C++ 17 Standard  
+Removed DirectInput dependency.  
+Added US Standard keyboard key mapper  
+Added //TODO tags  
+Added [[maybe_unused]] (since C++17) for unused variables  
+
 ### vzem version
 VZEM_20230225_distro  
 

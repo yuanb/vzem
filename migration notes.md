@@ -1,11 +1,3 @@
-### Features
-Added x64 build targets  
-ISO C++ 17 Standard  
-Removed DirectInput dependency.  
-Added US Standard keyboard key mapper  
-Added //TODO tags  
-Added [[maybe_unused]] (since C++17) for unused variables  
-
 ### TODOs:
 Remove 'register' annotation as it is removed in C++17 standard.  
 Refactor exception handling for LoadWAVFile helpers.  
