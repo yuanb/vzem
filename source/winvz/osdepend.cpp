@@ -18,7 +18,7 @@
 
 
 #define MAX_LOADSTRING 100
-//TODO: Refactor this
+//TODO: BY - This should be replaced by platform max path: MAX_PATH
 #define max_path 512
 
 static int g_playpos = 0;
@@ -452,7 +452,6 @@ void osd_ScanKbrd(BYTE *kbrd)
 	//
 	// This will be called every 20 ms from vzem
    byte			k;
-   HRESULT		hRet;
    BYTE         diks[256]; // keyboard state buffer
    extern		byte g_joystickByte;
    extern int	g_render;
@@ -966,7 +965,7 @@ void osd_LoadFont()
 
 }
 
-void ReadWavByte(HANDLE *phFile, BYTE *wavByte, HEADER wavHeader) throw (...)
+void ReadWavByte(HANDLE *phFile, BYTE *wavByte, HEADER wavHeader) noexcept(false)
 {
 	HANDLE	hFile = *phFile;
 	DWORD	numbytes;
@@ -1000,7 +999,7 @@ void ReadWavByte(HANDLE *phFile, BYTE *wavByte, HEADER wavHeader) throw (...)
 }
 
 
-BYTE FindCycle (HANDLE *phFile, int cycleNbr, HEADER wavHeader) throw (...)
+BYTE FindCycle (HANDLE *phFile, int cycleNbr, HEADER wavHeader) noexcept(false)
 {
 	// count the number of WAV file Bytes between the +ve and -ve range
 	// to determine if the next bit is a binary 1 or 0
@@ -1072,7 +1071,7 @@ BYTE FindCycle (HANDLE *phFile, int cycleNbr, HEADER wavHeader) throw (...)
 
 
 
-void FindStartBit(HANDLE *phFile, HEADER wavHeader) throw (...)
+void FindStartBit(HANDLE *phFile, HEADER wavHeader) noexcept(false)
 {
 	HANDLE hFile = *phFile;
 
@@ -1097,7 +1096,7 @@ void FindStartBit(HANDLE *phFile, HEADER wavHeader) throw (...)
 	}
 }
 
-BYTE ReadVZBit(HANDLE *phFile, HEADER wavHeader) throw (...)
+BYTE ReadVZBit(HANDLE *phFile, HEADER wavHeader) noexcept(false)
 {
 	// Decode the next VZ bit from the WAV file data
 
@@ -1132,7 +1131,7 @@ BYTE ReadVZBit(HANDLE *phFile, HEADER wavHeader) throw (...)
 	return bit;
 }
 
-BYTE ReadVZByte(HANDLE *phFile, HEADER wavHeader) throw (...)
+BYTE ReadVZByte(HANDLE *phFile, HEADER wavHeader) noexcept(false)
 {
 	// Decode the next VZ Byte from the WAV file data
 
@@ -1154,6 +1153,10 @@ BYTE ReadVZByte(HANDLE *phFile, HEADER wavHeader) throw (...)
 }
 
 
+//TODO: BY - I don't see a necessity for using exception handling in ReadWavByte(). Errors can be handled 
+// effectively by properly checking function return values. However, if this approach is preferred, we 
+// should refactor ReadWavByte() to throw either standard or custom exceptions. I replaced 'throw(...)' 
+// with 'noexcept(false)' to address the compiler warning C5040.
 VZFILE LoadWAVFile(HANDLE *phFile)
 {
 	HANDLE	hFile = *phFile;
@@ -1308,7 +1311,7 @@ VZFILE LoadWAVFile(HANDLE *phFile)
 	LoadVZFile(fileBuffer, fileSize, &vzf);
 
 	} 
-	catch (int errorCode) {
+	catch ([[maybe_unused]] int errorCode) {
         MessageBox( g_hWnd, "Could not decode WAV file. Try adjusting recording volume", 
                     "VZEM", MB_OK | MB_ICONERROR );
         EndDialog( g_hWnd, IDABORT );
@@ -1568,6 +1571,7 @@ void SaveWavFile(HANDLE *phFile,byte *fileBuffer, DWORD dwFileLen)
 
 	// Write the program
 
+	//TODO, BY - This should be the same type of endAddress and startAddress
 	unsigned long filesize = endAddress - startAddress;
 	for (n=0; n<filesize; n++)
 	{
@@ -1777,7 +1781,6 @@ void osd_MapPrinter()
 \*----------------------------------------------------------------*/
 
 	long		lDataLen = 1000;					// Maximum size for the signature.
-	DWORD		dwFileLen, dwFileLen1;
 	
 	CHAR		szFile[MAX_PATH] = TEXT(".txt\0");
 	OPENFILENAME ofn;
@@ -3177,7 +3180,7 @@ void osd_BlitBuffer(byte *bufr)
 
 		if (f_ratio > 1.4)	// 320x240 screen has a 1.3 ratio. Any greater than that need to scale
 		{
-			float fScale = f_yaxis * 1.3333;				
+			float fScale = f_yaxis * 1.3333f;				
 			int xOffset = (f_xaxis - fScale) / 2; 
 
 			destRect.left += xOffset;

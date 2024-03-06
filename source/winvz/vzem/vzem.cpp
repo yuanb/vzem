@@ -746,7 +746,6 @@ void Disassemble(char *disText, int startAddr, int endAddr)
 	int		n,c;
 	int		offset = 0;
 	byte	v;
-	int		value;
 	
 	strcpy(disText,"");
 	while (startAddr+offset <= endAddr)
@@ -2055,8 +2054,6 @@ void setMonitor(int monitor)
 
 void LoadPrefs()
 {
-	char* retv;
-
 	FILE *fp = fopen("vzemcfg.txt", "r");
 	if (fp != NULL)
 	{
