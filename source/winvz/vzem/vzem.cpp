@@ -1166,7 +1166,7 @@ void WrZ80(word A, byte v)
 		{
 			g_render = 4;
 
-			int scanline = (Regs.IPeriod - Regs.ICount) / CYCLES_PER_SCANLINE;
+			const int scanline = (Regs.IPeriod - Regs.ICount) / CYCLES_PER_SCANLINE;
 			if ((scanline >= display.FS) ||
 				(scanline < (display.lines_blanking + display.lines_top_border)))
 			{
@@ -1338,8 +1338,8 @@ void GenInterrupt(Z80 *R)
 
 void DrawBorder()
 {
-	int		mode = g_updateborder & 0x08;
-	int		bgcolor = g_updateborder & 0x10;
+	const int		mode = g_updateborder & 0x08;
+	const int		bgcolor = g_updateborder & 0x10;
 	int		bdcolor;
 	int		x,y;
 
@@ -2039,13 +2039,13 @@ void setMonitor(int monitor)
 		for (int c=0; c<13; c++)
 		{
 			long RGB_Color = palette[c];
-			byte r = (byte) ((RGB_Color & 0xFF0000 ) >> 16);
-			byte g = (byte) ((RGB_Color & 0x00FF00 ) >> 8);
-			byte b = (byte) ((RGB_Color & 0x0000FF )) ;
+			const byte r = (byte) ((RGB_Color & 0xFF0000 ) >> 16);
+			const byte g = (byte) ((RGB_Color & 0x00FF00 ) >> 8);
+			const byte b = (byte) ((RGB_Color & 0x0000FF )) ;
 
-			byte RGB_grey = (byte)(r * 0.3f  + g * 0.59f  + b * 0.11f);
+			const byte RGB_grey = (byte)(r * 0.3f  + g * 0.59f  + b * 0.11f);
 
-			long RGB24 = (long)((RGB_grey << 16) | (RGB_grey << 8) | RGB_grey);
+			const long RGB24 = (long)((RGB_grey << 16) | (RGB_grey << 8) | RGB_grey);
 			palette[c] = RGB24;
 		}
 	}
