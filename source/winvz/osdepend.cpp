@@ -241,7 +241,7 @@ USHORT	RGB16BIT[16];
 
 void removeFilePath(char *s, char *d)
 {
-	int len = strlen(s);
+	const int len = strlen(s);
 	int pos = len;
 	char ch = s[pos];
 	while (ch != 92)
@@ -463,7 +463,7 @@ void osd_ScanKbrd(BYTE *kbrd)
    // Poll the device before reading the current state. This is required
    // for some devices (joysticks) but has no effect for others (keyboard
    // and mice). Note: this uses a DIDevice2 interface for the device.
-   if (!GetKeyboardState(diks))
+   if (!GetKeyboardState(&diks[0]))
 	   return;
 
    for (int i = 0; i < sizeof(diks); i++)
@@ -494,8 +494,8 @@ void osd_ScanKbrd(BYTE *kbrd)
 				ShowWindow(hTool, SW_HIDE);									// hide toolbar
 				ShowWindow(hStatus, SW_HIDE);								// hide status bar 
 
-				int w = GetSystemMetrics(SM_CXSCREEN);						// hide task bar 
-				int h = GetSystemMetrics(SM_CYSCREEN);
+				const int w = GetSystemMetrics(SM_CXSCREEN);						// hide task bar 
+				const int h = GetSystemMetrics(SM_CYSCREEN);
 				SetWindowLongPtr(g_hWnd, GWL_STYLE, WS_VISIBLE | WS_POPUP);
 				SetWindowPos(g_hWnd, HWND_TOP, 0, 0, w, h, SWP_FRAMECHANGED);
 				UpdateWindow(g_hWnd);
