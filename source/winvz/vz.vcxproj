@@ -146,7 +146,8 @@
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -375,10 +376,19 @@
     <ClInclude Include="vzem\Sound.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="vzem\vzem.h" />
+    <ClInclude Include="Z80\Codes.h" />
+    <ClInclude Include="Z80\CodesCB.h" />
+    <ClInclude Include="Z80\CodesED.h" />
+    <ClInclude Include="Z80\CodesXCB.h" />
+    <ClInclude Include="Z80\CodesXX.h" />
+    <ClInclude Include="Z80\Tables.h" />
     <ClInclude Include="Z80\Z80.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="digital-fnt\Digital_VZ200.FNT" />
     <None Include="icon1.ico" />
+    <None Include="ROMS\vzrom.v20" />
+    <None Include="ROMS\vzrom.v21" />
     <None Include="toolbar.bmp" />
     <None Include="changetrack.wav" />
     <None Include="readsector.wav" />

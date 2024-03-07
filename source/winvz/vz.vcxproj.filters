@@ -52,6 +52,24 @@
     <ClInclude Include="keymapper_us.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Z80\Codes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Z80\CodesCB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Z80\CodesED.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Z80\CodesXX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Z80\Tables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Z80\CodesXCB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="icon1.ico">
@@ -62,5 +80,8 @@
     </None>
     <None Include="changetrack.wav" />
     <None Include="readsector.wav" />
+    <None Include="digital-fnt\Digital_VZ200.FNT" />
+    <None Include="ROMS\vzrom.v20" />
+    <None Include="ROMS\vzrom.v21" />
   </ItemGroup>
 </Project>
